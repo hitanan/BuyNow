@@ -1,0 +1,9 @@
+.chotot { background: yellow;}
+input[type=submit] {cursor: pointer; font-weight:bold;}
+.bold {font-size:120%;}
+input {width:100%}
+a {text-decoration:none;}
+body {    width: 200px;}
+.fform {
+    padding: 3px;
+}
