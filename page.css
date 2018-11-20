@@ -1,3 +1,11 @@
-#header, .title.step-title, .rw-checkout-loyalty {
-    display: none;
+#header, .title.step-title, 
+#opc-payment,
+#footer,
+#block_shipping,
+.product_in_order .title,
+.rw-checkout-loyalty, .wrap-loyalty.box-step.a-item {
+    display: none !important;
+}
+#btn_save_order {
+    line-height: 100px;
 }

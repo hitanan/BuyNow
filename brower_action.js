@@ -1,6 +1,6 @@
 var SENDO_API = 'https://www.sendo.vn/m/wap_v2/full/san-pham/'
 // When the popup HTML has loaded
-
+var productUrl;
 window.addEventListener('load', function(evt) {
 	var buyingInterVal;
 
@@ -14,8 +14,15 @@ window.addEventListener('load', function(evt) {
 
 	$('#buying').on('click', readyToBuy);
 
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+		var url = new URL(tabs[0].url);
+		productUrl = url.searchParams.get("productUrl");
+		console.log(productUrl);
+		$('#url').val(productUrl)
+	});
+
 	function readyToBuy() {
-		var productUrl = $('#url').val().match(/([^\/]+)(?=\.\w+(\/?)$)/)[0];
+		productUrl = productUrl || $('#url').val().match(/([^\/]+)(?=\.\w+(\/?)$)/)[0];
 		var price = 0;
 		if (buyingInterVal) {
 			clearInterval(buyingInterVal);
@@ -37,11 +44,16 @@ window.addEventListener('load', function(evt) {
 						// reload checkout page.
 						chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 							var url = tabs[0].url;
+							clearInterval(buyingInterVal);
 							if (!url.endsWith('buynow=1')) {
 								url += url.includes('?') ? '&' : '?';
 								url +='buynow=1';
-								chrome.tabs.update(tabs[0].id, {url: url});
-							}
+								chrome.tabs.update(tabs[0].id, {url: url}, function() {
+									clearInterval(buyingInterVal);
+									window.close();
+								});
+							} 
+							
 						});
 
 

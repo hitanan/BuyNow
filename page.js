@@ -1,25 +1,59 @@
 // console.log(document.getElementById('btn_save_order'));
 var SENDO_API = 'https://www.sendo.vn/m/wap_v2/full/san-pham/';
+var products;
+$(function() {
 
-// $(()=>{
 
   // console.log(window.sokratiLayer.ecommerce.cart.products);
-  var products = window.tag_manager_data_new.ecommerce.cart.products;
-  if (!!products) {
-    var productUrl = products[0].productUrl.match(/([^\/]+)(?=\.\w+(\/?)$)/)[0];
-    console.log(productUrl);
-    readyToBuy(productUrl);
-  }
-// });
+  var data = window.tag_manager_data_new || window.sokratiLayer;
+  if (data) {
+    products = data.ecommerce.cart.products;
+    if (!!products) {
 
-var buyingInterVal;
-function readyToBuy(productUrl) {
-  if (window.location.href.endsWith('buynow=1')) {
-    if (products[0].price == 1000) {
-      $('#btn_save_order').click();
+      var url = new URL(window.location.href);
+      var productUrl = url.searchParams.get("productUrl");
+      if (!productUrl) {
+        productUrl = products[0].productUrl.match(/([^\/]+)(?=\.\w+(\/?)$)/)[0];
+        window.location.href = window.location.href = addParamAtTheEnd(window.location.href, 'productUrl='+ productUrl);
+        return;
+      }
+      readyToBuy(productUrl);
     }
-    return;
   }
+  
+  function readyToBuy(productUrl) {
+    console.log(productUrl);
+    if (window.location.href.endsWith('buynow=1')) {
+      if (products[0].price == 1000) {
+        $('#btn_save_order').prop('disabled', false);
+
+        var btnSaveEnableInterval = setInterval(function() {
+          console.log('btnSaveEnableInterval');
+          if (!$('#btn_save_order').prop('disabled')) {
+            clearInterval(btnSaveEnableInterval);
+
+            $('#btn_save_order').click();
+          } 
+        }, 1);
+      }
+      return;
+    }
+    //checkingPrice(productUrl);
+  }
+  
+});
+
+function addParamAtTheEnd(url, param) {
+  if (!url.endsWith(param)) {
+    url += url.includes('?') ? '&' : '?';
+    url += param;
+  }
+  return url;
+}
+// reload page without popup (browser_action) script.
+var buyingInterVal;
+function checkingPrice(productUrl) {
+  
   // var productUrl = $('#url').val().match(/([^\/]+)(?=\.\w+(\/?)$)/)[0];
   var price = 0;
   if (buyingInterVal) {
@@ -40,12 +74,7 @@ function readyToBuy(productUrl) {
           price = data.result.data.final_price;
           
           // reload checkout page.
-          var url = window.location.href;
-          if (!url.endsWith('buynow=1')) {
-            url += url.includes('?') ? '&' : '?';
-            url +='buynow=1';
-            window.location.href =  url;
-          }
+          window.location.href = addParamAtTheEnd(window.location.href, 'buynow=1');
           
           
         } else {
