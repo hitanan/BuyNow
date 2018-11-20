@@ -1,7 +1,7 @@
 // console.log(document.getElementById('btn_save_order'));
 var SENDO_API = 'https://www.sendo.vn/m/wap_v2/full/san-pham/';
 var products;
-$(function() {
+$(document).ready(function() {
 
 
   // console.log(window.sokratiLayer.ecommerce.cart.products);
@@ -15,9 +15,10 @@ $(function() {
       if (!productUrl) {
         productUrl = products[0].productUrl.match(/([^\/]+)(?=\.\w+(\/?)$)/)[0];
         window.location.href = window.location.href = addParamAtTheEnd(window.location.href, 'productUrl='+ productUrl);
-        return;
       }
-      readyToBuy(productUrl);
+      else {
+        readyToBuy(productUrl);
+      }
     }
   }
   
@@ -25,14 +26,20 @@ $(function() {
     console.log(productUrl);
     if (window.location.href.endsWith('buynow=1')) {
       if (products[0].price == 1000) {
+
+        // submit form
+        Checkout.saveOrder();
+        $('form#checkout-place-order').submit();
+        return;
+
         $('#btn_save_order').prop('disabled', false);
 
         var btnSaveEnableInterval = setInterval(function() {
           console.log('btnSaveEnableInterval');
           if (!$('#btn_save_order').prop('disabled')) {
             clearInterval(btnSaveEnableInterval);
-
-            $('#btn_save_order').click();
+            console.log('BUY ME A BEER');
+            // $('#btn_save_order').click();
           } 
         }, 1);
       }

@@ -29,6 +29,9 @@ window.addEventListener('load', function(evt) {
 		}
 		buyingInterVal = setInterval(function() {
 
+
+
+
 			$.ajax({
 				url: SENDO_API + productUrl,
 				type: "GET",
@@ -41,6 +44,7 @@ window.addEventListener('load', function(evt) {
 						message = '<span style="font-weight:bold;font-size:32px;color:red">BUY NOW !!!</span>';
 						console.log('%c ' +message,'font-weight:bold;font-size:32px;color:red');
 
+						
 						// reload checkout page.
 						chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 							var url = tabs[0].url;
@@ -55,7 +59,6 @@ window.addEventListener('load', function(evt) {
 							} 
 							
 						});
-
 
 					} else {
 						// set price for the first time.
