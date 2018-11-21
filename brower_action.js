@@ -71,7 +71,7 @@ window.addEventListener('load', function(evt) {
 					$('#log').html(message);
 				}
 			});
-		}, 50);
+		}, 10);
 	}
 
 	
