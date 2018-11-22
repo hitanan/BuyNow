@@ -25,7 +25,7 @@ $(document).ready(function() {
   function readyToBuy(productUrl) {
     console.log(productUrl);
     if (window.location.href.endsWith('buynow=1')) {
-      if (products[0].price == 1000) {
+      if (products[0].price <= 5000) {
 
         // submit form
         Checkout.saveOrder();
